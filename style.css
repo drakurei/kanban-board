@@ -54,3 +54,22 @@ h1 {
   opacity: 0.5;
   cursor: grabbing;
 }
+
+/* Feature suppression : bouton x en haut a droite de la carte */
+.card {
+  position: relative;
+}
+.delete-btn {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  border: none;
+  background: transparent;
+  color: #b00;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.delete-btn:hover {
+  color: #f00;
+}
