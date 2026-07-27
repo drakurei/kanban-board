@@ -68,7 +68,17 @@ window.addEventListener("DOMContentLoaded", () => {
     todo.appendChild(makeCard({ id: nextId++, priority, title, content }));
   });
 
-  searchInput.addEventListener("input", () => {});
+  // --- Fonctionnalité 4 : Filtre par mot-clé ---
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.trim().toLowerCase();
+    document.querySelectorAll(".card").forEach((card) => {
+      const title = card.querySelector("h3").textContent.toLowerCase();
+      const content = card.querySelector("p").textContent.toLowerCase();
+      const match = title.includes(query) || content.includes(query);
+      card.style.display = match ? "" : "none";
+    });
+  });
+
   sortByPriorityBtn.addEventListener("click", () => {});
 
   // Met à niveau les cartes déjà présentes dans le HTML (drag + bouton supprimer)
