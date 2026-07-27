@@ -6,6 +6,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const sortByPriorityBtn = document.getElementById("sortByPriorityBtn");
   const columns = document.querySelectorAll(".column");
 
+  const PRIORITY_ORDER = { high: 3, medium: 2, low: 1 };
   let nextId = 5; // les ids 1 à 4 sont déjà utilisés dans le HTML
   let draggedCard = null;
 
@@ -79,7 +80,14 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  sortByPriorityBtn.addEventListener("click", () => {});
+  // --- Fonctionnalité 5 : Classement par priorité ---
+  sortByPriorityBtn.addEventListener("click", () => {
+    columns.forEach((col) => {
+      Array.from(col.querySelectorAll(".card"))
+        .sort((a, b) => PRIORITY_ORDER[b.dataset.priority] - PRIORITY_ORDER[a.dataset.priority])
+        .forEach((card) => col.appendChild(card)); // réordonne dans le DOM
+    });
+  });
 
   // Met à niveau les cartes déjà présentes dans le HTML (drag + bouton supprimer)
   document.querySelectorAll(".card").forEach((card) => {
