@@ -7,8 +7,48 @@ window.addEventListener("DOMContentLoaded", () => {
   const columns = document.querySelectorAll(".column");
 
   const PRIORITY_ORDER = { high: 3, medium: 2, low: 1 };
+  const STORAGE_KEY = "kanban-state";
   let nextId = 5; // les ids 1 à 4 sont déjà utilisés dans le HTML
   let draggedCard = null;
+
+  // --- Fonctionnalité 6 : Sauvegarde localStorage ---
+  function saveState() {
+    const cards = [];
+    document.querySelectorAll(".column").forEach((col) => {
+      const status = col.dataset.status;
+      col.querySelectorAll(".card").forEach((card) => {
+        cards.push({
+          id: card.dataset.id,
+          priority: card.dataset.priority,
+          status,
+          title: card.querySelector("h3").textContent,
+          content: card.querySelector("p").textContent,
+        });
+      });
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+  }
+
+  function loadState() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    let cards;
+    try {
+      cards = JSON.parse(raw);
+    } catch (e) {
+      return false;
+    }
+    // On vide les cartes existantes puis on reconstruit depuis le stockage
+    document.querySelectorAll(".card").forEach((c) => c.remove());
+    let maxId = 0;
+    cards.forEach((data) => {
+      const col = document.querySelector(`.column[data-status="${data.status}"]`);
+      if (col) col.appendChild(makeCard(data));
+      maxId = Math.max(maxId, Number(data.id) || 0);
+    });
+    nextId = maxId + 1;
+    return true;
+  }
 
   // Fabrique un élément carte à partir de données
   function makeCard({ id, priority, title, content }) {
@@ -32,6 +72,7 @@ window.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       card.remove();
+      saveState();
     });
   }
 
@@ -54,6 +95,7 @@ window.addEventListener("DOMContentLoaded", () => {
       if (!draggedCard) return;
       col.appendChild(draggedCard);
       draggedCard.dataset.status = col.dataset.status;
+      saveState();
     });
   });
 
@@ -67,6 +109,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const todo = document.querySelector('.column[data-status="todo"]');
     todo.appendChild(makeCard({ id: nextId++, priority, title, content }));
+    saveState();
   });
 
   // --- Fonctionnalité 4 : Filtre par mot-clé ---
@@ -85,21 +128,26 @@ window.addEventListener("DOMContentLoaded", () => {
     columns.forEach((col) => {
       Array.from(col.querySelectorAll(".card"))
         .sort((a, b) => PRIORITY_ORDER[b.dataset.priority] - PRIORITY_ORDER[a.dataset.priority])
-        .forEach((card) => col.appendChild(card)); // réordonne dans le DOM
+        .forEach((card) => col.appendChild(card));
     });
+    saveState();
   });
 
-  // Met à niveau les cartes déjà présentes dans le HTML (drag + bouton supprimer)
-  document.querySelectorAll(".card").forEach((card) => {
-    card.setAttribute("draggable", "true");
-    if (!card.querySelector(".delete-btn")) {
-      const btn = document.createElement("button");
-      btn.className = "delete-btn";
-      btn.title = "Supprimer";
-      btn.innerHTML = "&times;";
-      card.insertBefore(btn, card.firstChild);
-    }
-    enableDrag(card);
-    enableDelete(card);
-  });
+  // --- Initialisation ---
+  // Si un état est sauvegardé, on le restaure ; sinon on prépare les cartes du HTML.
+  if (!loadState()) {
+    document.querySelectorAll(".card").forEach((card) => {
+      card.setAttribute("draggable", "true");
+      if (!card.querySelector(".delete-btn")) {
+        const btn = document.createElement("button");
+        btn.className = "delete-btn";
+        btn.title = "Supprimer";
+        btn.innerHTML = "&times;";
+        card.insertBefore(btn, card.firstChild);
+      }
+      enableDrag(card);
+      enableDelete(card);
+    });
+    saveState();
+  }
 });
