@@ -1,54 +1,143 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8">
     <title>Kanban Board</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <h1>Kanban Board</h1>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    <div class="kanban">
-      <div class="column" data-status="todo">
-        <h2>To Do</h2>
+<body>
+
+<h1>Kanban Board</h1>
+
+<div class="kanban">
+
+    <div class="column" data-status="todo">
+        <h2>To Do <span class="counter">0</span></h2>
+
         <div class="card" data-id="1" data-priority="high">
-          <h3>Tâche 1</h3>
-          <p>Contenu de la tâche</p>
+            <h3>Tâche 1</h3>
+            <p>Contenu de la tâche</p>
         </div>
+
         <div class="card" data-id="2" data-priority="low">
-          <h3>Tâche 2</h3>
-          <p>Autre contenu</p>
+            <h3>Tâche 2</h3>
+            <p>Autre contenu</p>
         </div>
-      </div>
 
-      <div class="column" data-status="doing">
-        <h2>Doing</h2>
-        <div class="card" data-id="3" data-priority="medium">
-          <h3>Tâche 3</h3>
-          <p>En cours de traitement</p>
-        </div>
-      </div>
-
-      <div class="column" data-status="done">
-        <h2>Done</h2>
-        <div class="card" data-id="4" data-priority="high">
-          <h3>Tâche 4</h3>
-          <p>Terminé</p>
-        </div>
-      </div>
     </div>
 
-    <!-- Zone pour éventuellement des boutons, un champ de recherche, etc. -->
-    <div class="toolbar">
-      <button id="addCardBtn">Ajouter une carte</button>
-      <input
+    <div class="column" data-status="doing">
+
+        <h2>Doing <span class="counter">0</span></h2>
+
+        <div class="card" data-id="3" data-priority="medium">
+            <h3>Tâche 3</h3>
+            <p>En cours de traitement</p>
+        </div>
+
+    </div>
+
+    <div class="column" data-status="done">
+
+        <h2>Done <span class="counter">0</span></h2>
+
+        <div class="card" data-id="4" data-priority="high">
+            <h3>Tâche 4</h3>
+            <p>Terminé</p>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="toolbar">
+
+    <button id="addCardBtn">
+        ➕ Ajouter une carte
+    </button>
+
+    <input
         type="text"
         id="searchInput"
         placeholder="Rechercher une carte..."
-      />
-      <button id="sortByPriorityBtn">Trier par priorité</button>
+    >
+
+    <button id="sortByPriorityBtn">
+        Trier par priorité
+    </button>
+
+</div>
+
+<!-- ==================== MODALE ==================== -->
+
+<div id="cardModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2 id="modalTitle">
+            Nouvelle carte
+        </h2>
+
+        <label>
+
+            Titre
+
+            <input
+                type="text"
+                id="cardTitle"
+            >
+
+        </label>
+
+        <label>
+
+            Description
+
+            <textarea id="cardDescription"></textarea>
+
+        </label>
+
+        <label>
+
+            Priorité
+
+            <select id="cardPriority">
+
+                <option value="high">
+                    Haute
+                </option>
+
+                <option value="medium" selected>
+                    Moyenne
+                </option>
+
+                <option value="low">
+                    Faible
+                </option>
+
+            </select>
+
+        </label>
+
+        <div class="modal-buttons">
+
+            <button id="cancelBtn">
+                Annuler
+            </button>
+
+            <button id="saveCardBtn">
+                Enregistrer
+            </button>
+
+        </div>
+
     </div>
 
-    <script src="script.js"></script>
-  </body>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+
 </html>
