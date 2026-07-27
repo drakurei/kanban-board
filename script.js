@@ -16,9 +16,22 @@ window.addEventListener("DOMContentLoaded", () => {
     card.dataset.id = id;
     card.dataset.priority = priority;
     card.setAttribute("draggable", "true");
-    card.innerHTML = `<h3>${title}</h3><p>${content}</p>`;
+    card.innerHTML =
+      `<button class="delete-btn" title="Supprimer">&times;</button>` +
+      `<h3>${title}</h3><p>${content}</p>`;
     enableDrag(card);
+    enableDelete(card);
     return card;
+  }
+
+  // --- Fonctionnalité 3 : Supprimer une carte ---
+  function enableDelete(card) {
+    const btn = card.querySelector(".delete-btn");
+    if (!btn) return;
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      card.remove();
+    });
   }
 
   // --- Fonctionnalité 2 : Drag & drop ---
@@ -34,12 +47,12 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   columns.forEach((col) => {
-    col.addEventListener("dragover", (e) => e.preventDefault()); // autorise le drop
+    col.addEventListener("dragover", (e) => e.preventDefault());
     col.addEventListener("drop", (e) => {
       e.preventDefault();
       if (!draggedCard) return;
       col.appendChild(draggedCard);
-      draggedCard.dataset.status = col.dataset.status; // met à jour la colonne
+      draggedCard.dataset.status = col.dataset.status;
     });
   });
 
@@ -58,9 +71,17 @@ window.addEventListener("DOMContentLoaded", () => {
   searchInput.addEventListener("input", () => {});
   sortByPriorityBtn.addEventListener("click", () => {});
 
-  // Rendre déplaçables les cartes déjà présentes dans le HTML
+  // Met à niveau les cartes déjà présentes dans le HTML (drag + bouton supprimer)
   document.querySelectorAll(".card").forEach((card) => {
     card.setAttribute("draggable", "true");
+    if (!card.querySelector(".delete-btn")) {
+      const btn = document.createElement("button");
+      btn.className = "delete-btn";
+      btn.title = "Supprimer";
+      btn.innerHTML = "&times;";
+      card.insertBefore(btn, card.firstChild);
+    }
     enableDrag(card);
+    enableDelete(card);
   });
 });
