@@ -48,3 +48,9 @@ h1 {
   margin: 5px;
   padding: 5px 10px;
 }
+
+/* Feature drag & drop : carte en cours de déplacement */
+.card.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
