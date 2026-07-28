@@ -515,3 +515,29 @@ if(!loadState()){
 }
 
 });
+// --- Feature : Mode sombre (toggle + persistance localStorage) ---
+window.addEventListener("DOMContentLoaded", () => {
+  const THEME_KEY = "kanban-theme";
+  const toolbar = document.querySelector(".toolbar");
+  if (!toolbar) return;
+
+  const themeBtn = document.createElement("button");
+  themeBtn.id = "themeToggleBtn";
+  themeBtn.type = "button";
+
+  function applyTheme(dark) {
+    document.body.classList.toggle("dark-mode", dark);
+    themeBtn.textContent = dark ? "☀️ Mode clair" : "🌙 Mode sombre";
+  }
+
+  // Restaure la préférence enregistrée
+  applyTheme(localStorage.getItem(THEME_KEY) === "dark");
+
+  themeBtn.addEventListener("click", () => {
+    const dark = !document.body.classList.contains("dark-mode");
+    applyTheme(dark);
+    localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
+  });
+
+  toolbar.appendChild(themeBtn);
+});

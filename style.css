@@ -322,3 +322,26 @@ h1{
     }
 
 }
+/* Feature : mode sombre */
+body.dark-mode {
+  background: #1e1e2e;
+  color: #e6e6e6;
+}
+body.dark-mode .column {
+  background: #2a2a3c;
+  border-color: #444;
+}
+body.dark-mode .card {
+  background: #3a3a4d;
+  color: #e6e6e6;
+}
+body.dark-mode h1,
+body.dark-mode .column h2 {
+  color: #ffffff;
+}
+body.dark-mode .toolbar button,
+body.dark-mode .toolbar input {
+  background: #3a3a4d;
+  color: #e6e6e6;
+  border: 1px solid #555;
+}
