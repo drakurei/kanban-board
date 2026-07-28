@@ -642,3 +642,34 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   toolbar.appendChild(btn);
 });
+
+// --- Feature : Refonte de la toolbar (hiérarchie + regroupement) ---
+window.addEventListener("DOMContentLoaded", () => {
+  const toolbar = document.querySelector(".toolbar");
+  if (!toolbar) return;
+
+  const addClass = (id, cls) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add(cls);
+  };
+
+  addClass("addCardBtn", "btn-primary");
+  addClass("sortByPriorityBtn", "btn-ghost");
+  addClass("themeToggleBtn", "btn-ghost");
+  addClass("exportJsonBtn", "btn-ghost");
+  addClass("clearDoneBtn", "btn-danger");
+
+  // Filtre priorité -> segmented control avec état actif
+  const pf = toolbar.querySelector(".priority-filter");
+  if (pf) {
+    pf.classList.add("segmented");
+    const btns = pf.querySelectorAll("button");
+    btns.forEach((b) => {
+      b.addEventListener("click", () => {
+        btns.forEach((x) => x.classList.remove("active"));
+        b.classList.add("active");
+      });
+    });
+    if (btns[0]) btns[0].classList.add("active");
+  }
+});
