@@ -608,3 +608,20 @@ window.addEventListener("DOMContentLoaded", () => {
 
   toolbar.appendChild(btn);
 });
+
+// --- Feature : Nombre total de taches dans le titre ---
+window.addEventListener("DOMContentLoaded", () => {
+  const h1 = document.querySelector("h1");
+  if (!h1) return;
+  const base = h1.textContent.replace(/\s*\(\d+\)\s*$/, "");
+
+  function updateTotal() {
+    const n = document.querySelectorAll(".card").length;
+    h1.textContent = base + " (" + n + ")";
+  }
+
+  updateTotal();
+  document.querySelectorAll(".column").forEach((col) => {
+    new MutationObserver(updateTotal).observe(col, { childList: true, subtree: true });
+  });
+});
