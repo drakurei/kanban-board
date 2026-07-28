@@ -541,9 +541,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const THEME_KEY = "kanban-theme";
   const applyTheme = (dark) => {
     document.body.classList.toggle("dark-mode", dark);
-    themeBtn.textContent = dark ? "☀️ Mode clair" : "🌙 Mode sombre";
+    themeBtn.textContent = dark ? "Mode clair" : "Mode sombre";
   };
-  const themeBtn = addButton("🌙 Mode sombre", "btn-ghost", () => {
+  const themeBtn = addButton("Mode sombre", "btn-ghost", () => {
     const dark = !document.body.classList.contains("dark-mode");
     applyTheme(dark);
     localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
@@ -595,7 +595,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // 4) Vider la colonne "Done"
   const doneCol = document.querySelector('.column[data-status="done"]');
   if (doneCol) {
-    addButton("🧹 Vider Done", "btn-danger", () => {
+    addButton("Vider Done", "btn-danger", () => {
       if (confirm("Supprimer toutes les cartes terminées ?")) {
         doneCol.querySelectorAll(".card").forEach((c) => c.remove());
       }
