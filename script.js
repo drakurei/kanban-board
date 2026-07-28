@@ -541,3 +541,34 @@ window.addEventListener("DOMContentLoaded", () => {
 
   toolbar.appendChild(themeBtn);
 });
+
+// --- Feature : Filtre par priorité ---
+window.addEventListener("DOMContentLoaded", () => {
+  const toolbar = document.querySelector(".toolbar");
+  if (!toolbar) return;
+
+  const levels = [
+    { value: "all", label: "Toutes" },
+    { value: "high", label: "Haute" },
+    { value: "medium", label: "Moyenne" },
+    { value: "low", label: "Basse" },
+  ];
+
+  function applyPriorityFilter(value) {
+    document.querySelectorAll(".card").forEach((card) => {
+      const show = value === "all" || card.dataset.priority === value;
+      card.style.display = show ? "" : "none";
+    });
+  }
+
+  const wrap = document.createElement("span");
+  wrap.className = "priority-filter";
+  levels.forEach((lvl) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = lvl.label;
+    btn.addEventListener("click", () => applyPriorityFilter(lvl.value));
+    wrap.appendChild(btn);
+  });
+  toolbar.appendChild(wrap);
+});
