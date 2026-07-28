@@ -625,3 +625,20 @@ window.addEventListener("DOMContentLoaded", () => {
     new MutationObserver(updateTotal).observe(col, { childList: true, subtree: true });
   });
 });
+
+// --- Feature : Vider la colonne "Done" ---
+window.addEventListener("DOMContentLoaded", () => {
+  const toolbar = document.querySelector(".toolbar");
+  const doneCol = document.querySelector('.column[data-status="done"]');
+  if (!toolbar || !doneCol) return;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "clearDoneBtn";
+  btn.textContent = "🧹 Vider Done";
+  btn.addEventListener("click", () => {
+    if (!confirm("Supprimer toutes les cartes terminées ?")) return;
+    doneCol.querySelectorAll(".card").forEach((c) => c.remove());
+  });
+  toolbar.appendChild(btn);
+});
