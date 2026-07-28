@@ -515,3 +515,130 @@ if(!loadState()){
 }
 
 });
+// --- Feature : Mode sombre (toggle + persistance localStorage) ---
+window.addEventListener("DOMContentLoaded", () => {
+  const THEME_KEY = "kanban-theme";
+  const toolbar = document.querySelector(".toolbar");
+  if (!toolbar) return;
+
+  const themeBtn = document.createElement("button");
+  themeBtn.id = "themeToggleBtn";
+  themeBtn.type = "button";
+
+  function applyTheme(dark) {
+    document.body.classList.toggle("dark-mode", dark);
+    themeBtn.textContent = dark ? "☀️ Mode clair" : "🌙 Mode sombre";
+  }
+
+  // Restaure la préférence enregistrée
+  applyTheme(localStorage.getItem(THEME_KEY) === "dark");
+
+  themeBtn.addEventListener("click", () => {
+    const dark = !document.body.classList.contains("dark-mode");
+    applyTheme(dark);
+    localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
+  });
+
+  toolbar.appendChild(themeBtn);
+});
+
+// --- Feature : Filtre par priorité ---
+window.addEventListener("DOMContentLoaded", () => {
+  const toolbar = document.querySelector(".toolbar");
+  if (!toolbar) return;
+
+  const levels = [
+    { value: "all", label: "Toutes" },
+    { value: "high", label: "Haute" },
+    { value: "medium", label: "Moyenne" },
+    { value: "low", label: "Basse" },
+  ];
+
+  function applyPriorityFilter(value) {
+    document.querySelectorAll(".card").forEach((card) => {
+      const show = value === "all" || card.dataset.priority === value;
+      card.style.display = show ? "" : "none";
+    });
+  }
+
+  const wrap = document.createElement("span");
+  wrap.className = "priority-filter";
+  levels.forEach((lvl) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = lvl.label;
+    btn.addEventListener("click", () => applyPriorityFilter(lvl.value));
+    wrap.appendChild(btn);
+  });
+  toolbar.appendChild(wrap);
+});
+
+// --- Feature : Export du tableau en JSON ---
+window.addEventListener("DOMContentLoaded", () => {
+  const toolbar = document.querySelector(".toolbar");
+  if (!toolbar) return;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "exportJsonBtn";
+  btn.textContent = "Exporter (JSON)";
+
+  btn.addEventListener("click", () => {
+    const cards = [];
+    document.querySelectorAll(".column").forEach((col) => {
+      col.querySelectorAll(".card").forEach((card) => {
+        const h3 = card.querySelector("h3");
+        const p = card.querySelector("p");
+        cards.push({
+          status: col.dataset.status,
+          priority: card.dataset.priority,
+          title: h3 ? h3.textContent : "",
+          content: p ? p.textContent : "",
+        });
+      });
+    });
+    const blob = new Blob([JSON.stringify(cards, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "kanban.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  toolbar.appendChild(btn);
+});
+
+// --- Feature : Nombre total de taches dans le titre ---
+window.addEventListener("DOMContentLoaded", () => {
+  const h1 = document.querySelector("h1");
+  if (!h1) return;
+  const base = h1.textContent.replace(/\s*\(\d+\)\s*$/, "");
+
+  function updateTotal() {
+    const n = document.querySelectorAll(".card").length;
+    h1.textContent = base + " (" + n + ")";
+  }
+
+  updateTotal();
+  document.querySelectorAll(".column").forEach((col) => {
+    new MutationObserver(updateTotal).observe(col, { childList: true, subtree: true });
+  });
+});
+
+// --- Feature : Vider la colonne "Done" ---
+window.addEventListener("DOMContentLoaded", () => {
+  const toolbar = document.querySelector(".toolbar");
+  const doneCol = document.querySelector('.column[data-status="done"]');
+  if (!toolbar || !doneCol) return;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "clearDoneBtn";
+  btn.textContent = "🧹 Vider Done";
+  btn.addEventListener("click", () => {
+    if (!confirm("Supprimer toutes les cartes terminées ?")) return;
+    doneCol.querySelectorAll(".card").forEach((c) => c.remove());
+  });
+  toolbar.appendChild(btn);
+});

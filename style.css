@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
 *{
     margin:0;
     padding:0;
@@ -322,3 +323,147 @@ h1{
     }
 
 }
+/* Feature : mode sombre */
+body.dark-mode {
+  background: #1e1e2e;
+  color: #e6e6e6;
+}
+body.dark-mode .column {
+  background: #2a2a3c;
+  border-color: #444;
+}
+body.dark-mode .card {
+  background: #3a3a4d;
+  color: #e6e6e6;
+}
+body.dark-mode h1,
+body.dark-mode .column h2 {
+  color: #ffffff;
+}
+body.dark-mode .toolbar button,
+body.dark-mode .toolbar input {
+  background: #3a3a4d;
+  color: #e6e6e6;
+  border: 1px solid #555;
+}
+
+/* ================= UI polish (feature/ui-polish) ================= */
+:root {
+  --ink: #1e2438;
+  --muted: #5b647a;
+  --brand: #3b6ef5;
+  --brand-dark: #2b53c8;
+  --card: #ffffff;
+  --line: #e6e9f2;
+  --radius: 16px;
+  --shadow: 0 10px 30px -12px rgba(31, 41, 90, .25);
+}
+
+body {
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #dbe4ff 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, #e7f0ff 0%, transparent 50%),
+    linear-gradient(180deg, #eef2fb, #f8fafc);
+  background-attachment: fixed;
+}
+
+h1 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: clamp(28px, 4vw, 42px);
+  color: var(--ink);
+  margin-bottom: 34px;
+}
+
+.kanban { gap: 24px; }
+
+.column {
+  width: 320px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+.column:hover { transform: translateY(-4px); }
+
+.column h2 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.counter {
+  background: var(--brand);
+  box-shadow: 0 4px 10px -3px rgba(59, 110, 245, .6);
+  font-weight: 600;
+}
+
+.card {
+  background: #fbfcff;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--brand);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(31, 41, 90, .06);
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 22px -10px rgba(31, 41, 90, .35);
+}
+.card[data-priority="high"]   { border-left-color: #e74c3c; }
+.card[data-priority="medium"] { border-left-color: #f39c12; }
+.card[data-priority="low"]    { border-left-color: #2ecc71; }
+
+.card h3 { font-weight: 600; letter-spacing: -0.01em; }
+.card p  { color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+.priority { box-shadow: 0 3px 8px -3px rgba(0, 0, 0, .3); }
+
+.toolbar { gap: 12px; margin-top: 36px; }
+.toolbar button {
+  font-family: inherit;
+  font-weight: 600;
+  background: linear-gradient(180deg, var(--brand), var(--brand-dark));
+  box-shadow: 0 6px 16px -8px rgba(43, 83, 200, .8);
+}
+.toolbar button:hover {
+  background: linear-gradient(180deg, #4b7bff, var(--brand-dark));
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -8px rgba(43, 83, 200, .9);
+}
+.toolbar button:active { transform: translateY(0); }
+.toolbar input {
+  font-family: inherit;
+  border: 1px solid var(--line);
+  background: #fff;
+  box-shadow: inset 0 1px 3px rgba(31, 41, 90, .06);
+}
+.toolbar input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(59, 110, 245, .18);
+}
+
+/* Dark mode enrichi */
+body.dark-mode {
+  --ink: #e8ebf5;
+  --muted: #a2abc4;
+  --card: #171a2b;
+  --line: #2a2f47;
+  background:
+    radial-gradient(1000px 500px at 10% -10%, #1b2450 0%, transparent 55%),
+    linear-gradient(180deg, #0e1020, #12152a);
+}
+body.dark-mode .column { background: #141728; }
+body.dark-mode .card { background: #1a1e33; color: var(--ink); }
+body.dark-mode .card p { color: var(--muted); }
+body.dark-mode .toolbar input { background: #1a1e33; color: var(--ink); }
+body.dark-mode .modal-content { background: #171a2b; color: var(--ink); }
