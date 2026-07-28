@@ -515,161 +515,102 @@ if(!loadState()){
 }
 
 });
-// --- Feature : Mode sombre (toggle + persistance localStorage) ---
+
+// ============ Fonctionnalités supplémentaires (regroupées) ============
 window.addEventListener("DOMContentLoaded", () => {
-  const THEME_KEY = "kanban-theme";
   const toolbar = document.querySelector(".toolbar");
+  const h1 = document.querySelector("h1");
   if (!toolbar) return;
 
-  const themeBtn = document.createElement("button");
-  themeBtn.id = "themeToggleBtn";
-  themeBtn.type = "button";
+  // Helper : crée un bouton de toolbar (libellé, classe, action)
+  const addButton = (label, className, onClick) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = label;
+    btn.className = className;
+    btn.addEventListener("click", onClick);
+    toolbar.appendChild(btn);
+    return btn;
+  };
 
-  function applyTheme(dark) {
+  // Hiérarchie des boutons déjà présents dans le HTML
+  document.getElementById("addCardBtn")?.classList.add("btn-primary");
+  document.getElementById("sortByPriorityBtn")?.classList.add("btn-ghost");
+
+  // 1) Mode sombre (persistant via localStorage)
+  const THEME_KEY = "kanban-theme";
+  const applyTheme = (dark) => {
     document.body.classList.toggle("dark-mode", dark);
     themeBtn.textContent = dark ? "☀️ Mode clair" : "🌙 Mode sombre";
-  }
-
-  // Restaure la préférence enregistrée
-  applyTheme(localStorage.getItem(THEME_KEY) === "dark");
-
-  themeBtn.addEventListener("click", () => {
+  };
+  const themeBtn = addButton("🌙 Mode sombre", "btn-ghost", () => {
     const dark = !document.body.classList.contains("dark-mode");
     applyTheme(dark);
     localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
   });
+  applyTheme(localStorage.getItem(THEME_KEY) === "dark");
 
-  toolbar.appendChild(themeBtn);
-});
+  // 2) Filtre par priorité (segmented control avec état actif)
+  const priorityWrap = document.createElement("span");
+  priorityWrap.className = "priority-filter segmented";
+  [["all", "Toutes"], ["high", "Haute"], ["medium", "Moyenne"], ["low", "Basse"]].forEach(
+    ([value, label], i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = label;
+      if (i === 0) b.classList.add("active");
+      b.addEventListener("click", () => {
+        priorityWrap.querySelectorAll("button").forEach((x) => x.classList.remove("active"));
+        b.classList.add("active");
+        document.querySelectorAll(".card").forEach((card) => {
+          card.style.display = value === "all" || card.dataset.priority === value ? "" : "none";
+        });
+      });
+      priorityWrap.appendChild(b);
+    }
+  );
+  toolbar.appendChild(priorityWrap);
 
-// --- Feature : Filtre par priorité ---
-window.addEventListener("DOMContentLoaded", () => {
-  const toolbar = document.querySelector(".toolbar");
-  if (!toolbar) return;
-
-  const levels = [
-    { value: "all", label: "Toutes" },
-    { value: "high", label: "Haute" },
-    { value: "medium", label: "Moyenne" },
-    { value: "low", label: "Basse" },
-  ];
-
-  function applyPriorityFilter(value) {
-    document.querySelectorAll(".card").forEach((card) => {
-      const show = value === "all" || card.dataset.priority === value;
-      card.style.display = show ? "" : "none";
-    });
-  }
-
-  const wrap = document.createElement("span");
-  wrap.className = "priority-filter";
-  levels.forEach((lvl) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.textContent = lvl.label;
-    btn.addEventListener("click", () => applyPriorityFilter(lvl.value));
-    wrap.appendChild(btn);
-  });
-  toolbar.appendChild(wrap);
-});
-
-// --- Feature : Export du tableau en JSON ---
-window.addEventListener("DOMContentLoaded", () => {
-  const toolbar = document.querySelector(".toolbar");
-  if (!toolbar) return;
-
-  const btn = document.createElement("button");
-  btn.type = "button";
-  btn.id = "exportJsonBtn";
-  btn.textContent = "Exporter (JSON)";
-
-  btn.addEventListener("click", () => {
+  // 3) Export du tableau en JSON
+  addButton("Exporter (JSON)", "btn-ghost", () => {
     const cards = [];
     document.querySelectorAll(".column").forEach((col) => {
       col.querySelectorAll(".card").forEach((card) => {
-        const h3 = card.querySelector("h3");
-        const p = card.querySelector("p");
         cards.push({
           status: col.dataset.status,
           priority: card.dataset.priority,
-          title: h3 ? h3.textContent : "",
-          content: p ? p.textContent : "",
+          title: card.querySelector("h3")?.textContent ?? "",
+          content: card.querySelector("p")?.textContent ?? "",
         });
       });
     });
     const blob = new Blob([JSON.stringify(cards, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
+    a.href = URL.createObjectURL(blob);
     a.download = "kanban.json";
     a.click();
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(a.href);
   });
 
-  toolbar.appendChild(btn);
-});
-
-// --- Feature : Nombre total de taches dans le titre ---
-window.addEventListener("DOMContentLoaded", () => {
-  const h1 = document.querySelector("h1");
-  if (!h1) return;
-  const base = h1.textContent.replace(/\s*\(\d+\)\s*$/, "");
-
-  function updateTotal() {
-    const n = document.querySelectorAll(".card").length;
-    h1.textContent = base + " (" + n + ")";
+  // 4) Vider la colonne "Done"
+  const doneCol = document.querySelector('.column[data-status="done"]');
+  if (doneCol) {
+    addButton("🧹 Vider Done", "btn-danger", () => {
+      if (confirm("Supprimer toutes les cartes terminées ?")) {
+        doneCol.querySelectorAll(".card").forEach((c) => c.remove());
+      }
+    });
   }
 
-  updateTotal();
-  document.querySelectorAll(".column").forEach((col) => {
-    new MutationObserver(updateTotal).observe(col, { childList: true, subtree: true });
-  });
-});
-
-// --- Feature : Vider la colonne "Done" ---
-window.addEventListener("DOMContentLoaded", () => {
-  const toolbar = document.querySelector(".toolbar");
-  const doneCol = document.querySelector('.column[data-status="done"]');
-  if (!toolbar || !doneCol) return;
-
-  const btn = document.createElement("button");
-  btn.type = "button";
-  btn.id = "clearDoneBtn";
-  btn.textContent = "🧹 Vider Done";
-  btn.addEventListener("click", () => {
-    if (!confirm("Supprimer toutes les cartes terminées ?")) return;
-    doneCol.querySelectorAll(".card").forEach((c) => c.remove());
-  });
-  toolbar.appendChild(btn);
-});
-
-// --- Feature : Refonte de la toolbar (hiérarchie + regroupement) ---
-window.addEventListener("DOMContentLoaded", () => {
-  const toolbar = document.querySelector(".toolbar");
-  if (!toolbar) return;
-
-  const addClass = (id, cls) => {
-    const el = document.getElementById(id);
-    if (el) el.classList.add(cls);
-  };
-
-  addClass("addCardBtn", "btn-primary");
-  addClass("sortByPriorityBtn", "btn-ghost");
-  addClass("themeToggleBtn", "btn-ghost");
-  addClass("exportJsonBtn", "btn-ghost");
-  addClass("clearDoneBtn", "btn-danger");
-
-  // Filtre priorité -> segmented control avec état actif
-  const pf = toolbar.querySelector(".priority-filter");
-  if (pf) {
-    pf.classList.add("segmented");
-    const btns = pf.querySelectorAll("button");
-    btns.forEach((b) => {
-      b.addEventListener("click", () => {
-        btns.forEach((x) => x.classList.remove("active"));
-        b.classList.add("active");
-      });
-    });
-    if (btns[0]) btns[0].classList.add("active");
+  // 5) Nombre total de tâches dans le titre
+  if (h1) {
+    const base = h1.textContent.replace(/\s*\(\d+\)\s*$/, "");
+    const updateTotal = () => {
+      h1.textContent = `${base} (${document.querySelectorAll(".card").length})`;
+    };
+    updateTotal();
+    document.querySelectorAll(".column").forEach((col) =>
+      new MutationObserver(updateTotal).observe(col, { childList: true, subtree: true })
+    );
   }
 });
