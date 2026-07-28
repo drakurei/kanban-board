@@ -572,3 +572,39 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   toolbar.appendChild(wrap);
 });
+
+// --- Feature : Export du tableau en JSON ---
+window.addEventListener("DOMContentLoaded", () => {
+  const toolbar = document.querySelector(".toolbar");
+  if (!toolbar) return;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "exportJsonBtn";
+  btn.textContent = "Exporter (JSON)";
+
+  btn.addEventListener("click", () => {
+    const cards = [];
+    document.querySelectorAll(".column").forEach((col) => {
+      col.querySelectorAll(".card").forEach((card) => {
+        const h3 = card.querySelector("h3");
+        const p = card.querySelector("p");
+        cards.push({
+          status: col.dataset.status,
+          priority: card.dataset.priority,
+          title: h3 ? h3.textContent : "",
+          content: p ? p.textContent : "",
+        });
+      });
+    });
+    const blob = new Blob([JSON.stringify(cards, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "kanban.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  toolbar.appendChild(btn);
+});
