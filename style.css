@@ -467,3 +467,126 @@ body.dark-mode .card { background: #1a1e33; color: var(--ink); }
 body.dark-mode .card p { color: var(--muted); }
 body.dark-mode .toolbar input { background: #1a1e33; color: var(--ink); }
 body.dark-mode .modal-content { background: #171a2b; color: var(--ink); }
+
+/* ============ Refonte de la toolbar ============ */
+.toolbar {
+  margin: 30px auto 0;
+  max-width: 1040px;
+  padding: 14px 18px;
+  background: #ffffff;
+  border: 1px solid #e6ebf3;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(20, 40, 90, 0.06);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.toolbar button {
+  font: inherit;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #334155;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.toolbar button:active { transform: translateY(1px); }
+
+.toolbar .btn-primary {
+  background: linear-gradient(135deg, #4f6ef7, #3b82f6);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+}
+.toolbar .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(59, 130, 246, 0.45);
+}
+.toolbar .btn-ghost {
+  background: #f4f6fb;
+  color: #3b5bdb;
+  border-color: #e2e8f5;
+}
+.toolbar .btn-ghost:hover { background: #e9edfb; border-color: #c9d4f5; }
+.toolbar .btn-danger {
+  background: #fff5f6;
+  color: #e11d48;
+  border-color: #fbd5dc;
+}
+.toolbar .btn-danger:hover { background: #ffe4e9; border-color: #f6b7c3; }
+
+.toolbar input {
+  flex: 1 1 220px;
+  min-width: 180px;
+  max-width: 280px;
+  padding: 10px 14px 10px 38px;
+  border-radius: 10px;
+  border: 1px solid #dbe2ee;
+  background: #f8fafc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 12px center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.toolbar input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.toolbar .priority-filter.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: #eef2f8;
+  border: 1px solid #e2e8f2;
+  border-radius: 12px;
+}
+.toolbar .priority-filter.segmented button {
+  padding: 7px 12px;
+  border-radius: 9px;
+  color: #64748b;
+  background: transparent;
+  border: none;
+}
+.toolbar .priority-filter.segmented button:hover { color: #3b5bdb; }
+.toolbar .priority-filter.segmented button.active {
+  background: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 2px 6px rgba(20, 40, 90, 0.12);
+}
+
+/* dark mode toolbar */
+body.dark-mode .toolbar {
+  background: #262637;
+  border-color: #35354a;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+body.dark-mode .toolbar .btn-primary {
+  background: linear-gradient(135deg, #4f6ef7, #3b82f6);
+  color: #fff;
+}
+body.dark-mode .toolbar .btn-ghost {
+  background: #313145;
+  color: #c7d2fe;
+  border-color: #3d3d55;
+}
+body.dark-mode .toolbar .btn-ghost:hover { background: #3a3a52; }
+body.dark-mode .toolbar .btn-danger {
+  background: #3a2a30;
+  color: #fda4af;
+  border-color: #5a3540;
+}
+body.dark-mode .toolbar input {
+  background-color: #313145;
+  color: #e6e6e6;
+  border-color: #3d3d55;
+}
+body.dark-mode .toolbar .priority-filter.segmented {
+  background: #313145;
+  border-color: #3d3d55;
+}
+body.dark-mode .toolbar .priority-filter.segmented button { color: #a5b4fc; }
+body.dark-mode .toolbar .priority-filter.segmented button.active {
+  background: #4b4b66;
+  color: #fff;
+}
